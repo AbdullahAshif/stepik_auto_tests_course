@@ -1,0 +1,17 @@
+from selenium.webdriver.common.by import By
+
+url = "http://selenium1py.pythonanywhere.com/"
+
+
+class TestMainPage1():
+    def test_guest_should_see_login_link(self, browser):
+        print("\nstart test1")
+        browser.get(url)
+        browser.find_element(By.CSS_SELECTOR, "#login_link")
+        print("finish test1")
+
+    def test_guest_should_see_basket_link_on_the_main_page(self, browser):
+        print("\nstart test2")
+        browser.get(url)
+        browser.find_element(By.CSS_SELECTOR, ".basket-mini .btn-group > a")
+        print("finish test2")
