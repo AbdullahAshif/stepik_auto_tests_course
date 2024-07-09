@@ -10,6 +10,7 @@ logs/*
 temporary/*
 secrets.json
 dev
+.idea/misc.xml
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

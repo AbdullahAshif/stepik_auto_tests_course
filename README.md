@@ -1,4 +1,4 @@
-### stepik_auto_tests_course
+## Stepik auto tests course
+### This project is based on Python and Selenium from Stepik courses
 #### a.moinur@a1qa.com
-
-### Use command to run codes `pytest -s -v --browser_name=chrome --language=fr test_name.py`
+##### Run the codes in command line `pytest tests/ -v --tb=line --language=en -m need_review`
