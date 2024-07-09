@@ -1,7 +1,5 @@
-import time
-
-import pytest
 from page_forms.encrypted_page import EncryptedLink
+
 
 def test_encrypted_link(browser):
     url = "http://suninjuly.github.io/find_link_text.html"
