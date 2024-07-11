@@ -1,25 +1,16 @@
+import math
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from resource.locators import BasePageLocators
 
 
 class BasePage():
-    def should_be_authorized_user(self):
-        assert self.is_element_present(*BasePageLocators.USER_ICON), "User icon is not presented," \
-                                                                     " probably unauthorised user"
-
-    def go_to_login_page(self):
-        login_link = self.browser.find_element(*BasePageLocators.LOGIN_LINK)
-        login_link.click()
-
-    def go_to_basket(self):
-        login_link = self.browser.find_element(*BasePageLocators.BASKET_LINK)
-        login_link.click()
-
-    def should_be_login_link(self):
-        assert self.is_element_present(*BasePageLocators.LOGIN_LINK), "Login link should be present"
+    LOGIN_LINK = (By.CSS_SELECTOR, "#login_link")
+    LOGIN_LINK_INVALID = (By.CSS_SELECTOR, "#login_link_inc")
+    BASKET_LINK = (By.XPATH, "//a[contains(text(), 'View basket')]")
+    USER_ICON = (By.CSS_SELECTOR, ".icon-user")
 
     def __init__(self, browser, url, timeout=10):
         self.browser = browser
@@ -29,12 +20,70 @@ class BasePage():
     def open(self):
         self.browser.get(self.url)
 
+    def find_element(self, how, what):
+        try:
+            return self.browser.find_element(how, what)
+        except NoSuchElementException:
+            print(f"Element {what} not found on page")
+            return None
+
+    def find_elements(self, how, what):
+        try:
+            return self.browser.find_elements(how, what)
+        except NoSuchElementException:
+            print(f"No elements found matching {what}")
+            return []
+
+    def get_element_text(self, how, what):
+        element = self.find_element(how, what)
+        if element:
+            return element.text
+        return ""
+
+    def click_element(self, how, what):
+        element = self.find_element(how, what)
+        if element:
+            element.click()
+
+    def enter_text(self, how, what, text):
+        element = self.find_element(how, what)
+        if element:
+            element.clear()
+            element.send_keys(text)
+
+    def handle_alert(self, timeout=10):
+        try:
+            WebDriverWait(self.browser, timeout).until(EC.alert_is_present())
+            alert = self.browser.switch_to.alert
+            alert_text = alert.text
+            alert.accept()
+            print(f"\nAlert Text: {alert_text}")
+            return alert_text
+        except TimeoutException:
+            print("No alert present after form submission.")
+            return None
+
     def is_element_present(self, how, what):
         try:
             self.browser.find_element(how, what)
-        except (NoSuchElementException):
+        except NoSuchElementException:
             return False
         return True
+
+    def is_authorized_user(self):
+        assert self.is_element_present(*self.USER_ICON), "User icon is not presented," \
+                                                         " probably unauthorised user"
+
+    def go_to_login_page(self):
+        login_link = self.find_element(*self.LOGIN_LINK)
+        login_link.click()
+
+    def go_to_basket(self):
+        login_link = self.find_element(*self.BASKET_LINK)
+        login_link.click()
+
+    def login_link_is_present(self):
+        assert self.is_element_present(*self.LOGIN_LINK), "Login link should be present"
 
     def is_not_element_present(self, how, what, timeout=4):
         try:
@@ -51,3 +100,7 @@ class BasePage():
         except TimeoutException:
             return False
         return True
+
+    def do_math_to_click_real_url(self):
+        math_value = str(math.ceil(math.pow(math.pi, math.e) * 10000))
+        self.find_element(By.PARTIAL_LINK_TEXT, math_value).click()

@@ -15,7 +15,7 @@ class TestUserAddToBasketFromProductPage:
         email = str(time.time()) + "@fakemail.org"
         password = "kdoemo38hedk84"
         register_page.register_new_user(email, password)
-        register_page.should_be_authorized_user()
+        register_page.is_authorized_user()
 
     @pytest.mark.need_review
     def test_user_can_add_product_to_basket(self, browser):
@@ -70,8 +70,8 @@ def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
     page.open()
     page.go_to_basket()
     basket_page = BasketPage(browser, browser.current_url)
-    basket_page.basket_should_be_empty()
-    basket_page.text_basket_is_empty_should_be_present()
+    basket_page.is_basket_empty()
+    basket_page.check_basket_alert_message('basket is empty')
 
 
 @pytest.mark.need_review
@@ -114,4 +114,4 @@ def test_guest_should_see_login_link_on_product_page(browser):
     link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, link)
     page.open()
-    page.should_be_login_link()
+    page.login_link_is_present()

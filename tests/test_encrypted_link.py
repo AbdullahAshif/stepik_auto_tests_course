@@ -7,3 +7,4 @@ def test_encrypted_link(browser):
     page.open()
     page.do_math_to_click_real_url()
     page.fill_form()
+    page.handle_alert()

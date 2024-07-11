@@ -1,28 +1,37 @@
 import math
 from selenium.common.exceptions import NoAlertPresentException
+from selenium.webdriver.common.by import By
 from page_forms.base_page import BasePage
-from resource.locators import ProductPageLocators
 
 
 class ProductPage(BasePage):
+    ADD_TO_BASKET_BUTTON = (By.CSS_SELECTOR, "button.btn-add-to-basket")
+    PRODUCT_NAME = (By.CSS_SELECTOR, "div.product_main>h1")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, "p.price_color")
+    ALERT = (By.CSS_SELECTOR, "div.alertinner")
+    SUCCESS_MESSAGE = (By.CSS_SELECTOR, "div.alertinner")
+
+    def __init__(self, browser, url):
+        super().__init__(browser, url)
+
     def get_product_name(self):
-        return self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text
+        return self.get_element_text(*self.PRODUCT_NAME)
 
     def get_price(self):
-        return self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
+        return self.get_element_text(*self.PRODUCT_PRICE)
 
     def check_alert_product_added(self, product_name):
         expected_alert = product_name + ' has been added to your basket.'
-        alert = self.browser.find_elements(*ProductPageLocators.ALERT)[0].text
+        alert = self.find_elements(*self.ALERT)[0].text
         assert expected_alert in alert, f"Should be '{expected_alert}' in alert:'{alert}'"
 
     def check_alert_sum_in_basket(self, price):
         expected_alert = 'Your basket total is now ' + price
-        alert = self.browser.find_elements(*ProductPageLocators.ALERT)[2].text
+        alert = self.find_elements(*self.ALERT)[2].text
         assert expected_alert in alert, f"Should be '{expected_alert}' in alert:'{alert}'"
 
     def add_to_basket(self):
-        add_to_basket_button = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON)
+        add_to_basket_button = self.browser.find_element(*self.ADD_TO_BASKET_BUTTON)
         add_to_basket_button.click()
 
     def solve_quiz_and_get_code(self):
@@ -32,17 +41,14 @@ class ProductPage(BasePage):
         alert.send_keys(answer)
         alert.accept()
         try:
-            alert = self.browser.switch_to.alert
-            alert_text = alert.text
-            print(f"Your code: {alert_text}")
-            alert.accept()
+            self.handle_alert()
         except NoAlertPresentException:
             print("No second alert presented")
 
     def should_not_be_success_message(self):
-        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+        assert self.is_not_element_present(*self.SUCCESS_MESSAGE), \
             "Success message should not disappear"
 
     def should_disappear_success_message(self):
-        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
+        assert self.is_disappeared(*self.SUCCESS_MESSAGE), \
             "Success message should disappear"
