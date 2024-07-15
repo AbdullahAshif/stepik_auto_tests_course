@@ -1,5 +1,13 @@
 import pytest
+from enum import Enum
 
+
+class Browser(Enum):
+    CHROME = "chrome"
+    FIREFOX = "firefox"
+
+DEFAULT_TIMEOUT = 10
+MIN_TIMEOUT = 4
 BASE_URL = "http://selenium1py.pythonanywhere.com"
 LOGIN_URL = f"{BASE_URL}/en-gb/accounts/login/"
 BASKET_URL = f"{BASE_URL}/en-gb/basket/"

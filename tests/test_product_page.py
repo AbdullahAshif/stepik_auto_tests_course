@@ -1,7 +1,7 @@
 from page_forms.product_page import ProductPage
 from page_forms.login_page import LoginPage
 from page_forms.basket_page import BasketPage
-from config import LOGIN_URL, PROMO_URLS, PRODUCT_URL, LOGIN_TO_PRODUCT_URL
+from utils.constants import LOGIN_URL, PROMO_URLS, PRODUCT_URL, LOGIN_TO_PRODUCT_URL
 import time
 import pytest
 

@@ -1,9 +1,10 @@
-import math
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from utils.math_utils import click_real_url
+from utils.constants import DEFAULT_TIMEOUT, MIN_TIMEOUT
 
 
 class BasePage():
@@ -12,7 +13,7 @@ class BasePage():
     BASKET_LINK = (By.XPATH, "//a[contains(text(), 'View basket')]")
     USER_ICON = (By.CSS_SELECTOR, ".icon-user")
 
-    def __init__(self, browser, url, timeout=10):
+    def __init__(self, browser, url, timeout=DEFAULT_TIMEOUT):
         self.browser = browser
         self.url = url
         self.browser.implicitly_wait(timeout)
@@ -51,7 +52,7 @@ class BasePage():
             element.clear()
             element.send_keys(text)
 
-    def handle_alert(self, timeout=10):
+    def handle_alert(self, timeout=DEFAULT_TIMEOUT):
         try:
             WebDriverWait(self.browser, timeout).until(EC.alert_is_present())
             alert = self.browser.switch_to.alert
@@ -85,7 +86,7 @@ class BasePage():
     def login_link_is_present(self):
         assert self.is_element_present(*self.LOGIN_LINK), "Login link should be present"
 
-    def is_not_element_present(self, how, what, timeout=4):
+    def is_not_element_present(self, how, what, timeout=MIN_TIMEOUT):
         try:
             WebDriverWait(self.browser, timeout).until(EC.presence_of_element_located((how, what)))
         except TimeoutException:
@@ -93,7 +94,7 @@ class BasePage():
             return True
         return False
 
-    def is_disappeared(self, how, what, timeout=4):
+    def is_disappeared(self, how, what, timeout=MIN_TIMEOUT):
         try:
             (WebDriverWait(self.browser, timeout, 1, (TimeoutException,)).until_not
              (EC.presence_of_element_located((how, what))))
@@ -102,5 +103,5 @@ class BasePage():
         return True
 
     def do_math_to_click_real_url(self):
-        math_value = str(math.ceil(math.pow(math.pi, math.e) * 10000))
-        self.find_element(By.PARTIAL_LINK_TEXT, math_value).click()
+        math = click_real_url()
+        self.find_element(By.PARTIAL_LINK_TEXT, math).click()

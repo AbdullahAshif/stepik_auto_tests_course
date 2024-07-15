@@ -12,9 +12,9 @@ class EncryptedLink(BasePage):
     def __init__(self, browser, url):
         super().__init__(browser, url)
 
-    def fill_form(self):
-        self.enter_text(*self.FIRST_NAME, "Ivan")
-        self.enter_text(*self.LAST_NAME, "Petrov")
-        self.enter_text(*self.CITY_NAME, "Smolensk")
-        self.enter_text(*self.COUNTRY_NAME, "Russia")
+    def fill_form(self, first_name, last_name, city, country):
+        self.enter_text(*self.FIRST_NAME, first_name)
+        self.enter_text(*self.LAST_NAME, last_name)
+        self.enter_text(*self.CITY_NAME, city)
+        self.enter_text(*self.COUNTRY_NAME, country)
         self.click_element(*self.SUBMIT_BUTTON)

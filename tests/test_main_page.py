@@ -1,7 +1,7 @@
 from page_forms.main_page import MainPage
 from page_forms.basket_page import BasketPage
 from page_forms.login_page import LoginPage
-from config import BASE_URL
+from utils.constants import BASE_URL
 import pytest
 
 

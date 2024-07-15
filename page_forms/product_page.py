@@ -1,9 +1,8 @@
-import math
 from selenium.common.exceptions import NoAlertPresentException, TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from utils.math_utils import solve_quiz
 from page_forms.base_page import BasePage
 
 
@@ -42,7 +41,7 @@ class ProductPage(BasePage):
             alert = WebDriverWait(self.browser, 10).until(EC.alert_is_present())
             alert_text = alert.text
             print(f"Alert Text: {alert_text}")
-            answer = self.solve_quiz(alert_text)
+            answer = solve_quiz(alert_text)
             alert.send_keys(answer)
             alert.accept()
 
@@ -57,12 +56,6 @@ class ProductPage(BasePage):
             print("No alert present within 10 seconds")
         except NoAlertPresentException:
             print("No second alert presented")
-
-    def solve_quiz(self, alert_text):
-        # Example logic to solve the quiz based on the alert text
-        x = alert_text.split(" ")[2]
-        answer = str(math.log(abs((12 * math.sin(float(x))))))
-        return answer
 
     def should_not_be_success_message(self):
         assert self.is_not_element_present(*self.SUCCESS_MESSAGE), \
