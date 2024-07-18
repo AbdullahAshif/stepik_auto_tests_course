@@ -1,0 +1,70 @@
+from selenium.common.exceptions import NoAlertPresentException, TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from utils.math_utils import solve_quiz
+from page_forms.base_page import BasePage
+
+
+class ProductPage(BasePage):
+    ADD_TO_BASKET_BUTTON = (By.CSS_SELECTOR, "button.btn-add-to-basket")
+    PRODUCT_NAME = (By.CSS_SELECTOR, "div.product_main>h1")
+    PRODUCT_PRICE = (By.CSS_SELECTOR, "p.price_color")
+    ALERT = (By.CSS_SELECTOR, "div.alertinner")
+    SUCCESS_MESSAGE = (By.CSS_SELECTOR, "div.alertinner")
+
+    def __init__(self, browser, url):
+        super().__init__(browser, url)
+
+    def get_product_name(self):
+        product_name = self.get_element_text(*self.PRODUCT_NAME)
+        print(f"Product Name Retrieved: {product_name}")
+        return product_name
+
+    def get_price(self):
+        product_price = self.get_element_text(*self.PRODUCT_PRICE)
+        print(f"Product Price Retrieved: {product_price}")
+        return product_price
+
+    def check_alert_product_added(self, product_name):
+        expected_alert = product_name + ' has been added to your basket.'
+        alert = self.find_elements(*self.ALERT)[0].text
+        assert expected_alert in alert, f"Should be '{expected_alert}' in alert:'{alert}'"
+
+    def check_alert_sum_in_basket(self, price):
+        expected_alert = 'Your basket total is now ' + price
+        alert = self.find_elements(*self.ALERT)[2].text
+        assert expected_alert in alert, f"Should be '{expected_alert}' in alert:'{alert}'"
+
+    def add_to_basket(self):
+        add_to_basket_button = self.browser.find_element(*self.ADD_TO_BASKET_BUTTON)
+        add_to_basket_button.click()
+
+    def solve_quiz_and_get_code(self):
+        try:
+            alert = WebDriverWait(self.browser, 10).until(EC.alert_is_present())
+            alert_text = alert.text.split(" ")[2]
+            print(f"Alert Text: {alert_text}")
+            answer = solve_quiz(alert_text)
+            alert.send_keys(answer)
+            alert.accept()
+
+            # Wait for the second alert
+            WebDriverWait(self.browser, 10).until(EC.alert_is_present())
+            second_alert = self.browser.switch_to.alert
+            second_alert_text = second_alert.text
+            print(f"Second Alert Text: {second_alert_text}")
+            second_alert.accept()
+
+        except TimeoutException:
+            print("No alert present within 10 seconds")
+        except NoAlertPresentException:
+            print("No second alert presented")
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*self.SUCCESS_MESSAGE), \
+            "Success message should not disappear"
+
+    def should_disappear_success_message(self):
+        assert self.is_disappeared(*self.SUCCESS_MESSAGE), \
+            "Success message should disappear"
