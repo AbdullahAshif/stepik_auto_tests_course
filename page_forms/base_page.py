@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from utils.math_utils import click_real_url
-from utils.constants import DEFAULT_TIMEOUT, MIN_TIMEOUT
+from configs.constants import DEFAULT_TIMEOUT, MIN_TIMEOUT
 
 
 class BasePage():
@@ -80,8 +80,8 @@ class BasePage():
         login_link.click()
 
     def go_to_basket(self):
-        login_link = self.find_element(*self.BASKET_LINK)
-        login_link.click()
+        basket_link = self.find_element(*self.BASKET_LINK)
+        basket_link.click()
 
     def login_link_is_present(self):
         assert self.is_element_present(*self.LOGIN_LINK), "Login link should be present"

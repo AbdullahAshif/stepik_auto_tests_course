@@ -17,10 +17,14 @@ class ProductPage(BasePage):
         super().__init__(browser, url)
 
     def get_product_name(self):
-        return self.get_element_text(*self.PRODUCT_NAME)
+        product_name = self.get_element_text(*self.PRODUCT_NAME)
+        print(f"Product Name Retrieved: {product_name}")
+        return product_name
 
     def get_price(self):
-        return self.get_element_text(*self.PRODUCT_PRICE)
+        product_price = self.get_element_text(*self.PRODUCT_PRICE)
+        print(f"Product Price Retrieved: {product_price}")
+        return product_price
 
     def check_alert_product_added(self, product_name):
         expected_alert = product_name + ' has been added to your basket.'
@@ -39,7 +43,7 @@ class ProductPage(BasePage):
     def solve_quiz_and_get_code(self):
         try:
             alert = WebDriverWait(self.browser, 10).until(EC.alert_is_present())
-            alert_text = alert.text
+            alert_text = alert.text.split(" ")[2]
             print(f"Alert Text: {alert_text}")
             answer = solve_quiz(alert_text)
             alert.send_keys(answer)

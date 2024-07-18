@@ -1,10 +1,8 @@
 import math
 
 
-def solve_quiz(alert_text):
-    x = alert_text.split(" ")[2]
-    answer = str(math.log(abs((12 * math.sin(float(x))))))
-    return answer
+def solve_quiz(value):
+    return str(math.log(abs((12 * math.sin(float(value))))))
 
 
 def click_real_url():

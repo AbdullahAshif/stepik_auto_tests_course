@@ -15,4 +15,4 @@ class BasketPage(BasePage):
 
     def check_basket_alert_message(self, expected_alert):
         alert = self.get_element_text(*self.ALERT)
-        assert expected_alert in alert, f"Expected '{expected_alert}' in alert message, got '{alert}'"
+        assert str(expected_alert) in alert, f"Expected '{expected_alert}' in alert message, got '{alert}'"
